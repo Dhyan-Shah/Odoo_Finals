@@ -10,7 +10,11 @@
   },
   "dependencies": {
     "axios": "^1.6.2",
+<<<<<<< HEAD
     "lucide-react": "^0.294.0",
+=======
+    "lucide-react": "^1.7.0",
+>>>>>>> c591385ccdd58fa458e6948a62db78e45746c79f
     "qrcode.react": "^3.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

@@ -4,7 +4,11 @@
 
 @layer base {
   html { font-family: 'DM Sans', system-ui, sans-serif; }
+<<<<<<< HEAD
   body { @apply bg-surface-50 text-gray-600; }
+=======
+  body { @apply bg-surface-50 text-gray-600 mb-1; }
+>>>>>>> c591385ccdd58fa458e6948a62db78e45746c79f
   * { @apply border-surface-200; }
 }
 

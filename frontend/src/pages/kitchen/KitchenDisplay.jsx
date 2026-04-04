@@ -5,6 +5,7 @@ import { connectSocket, disconnectSocket } from '../../api/socket'
 import { useAuthStore } from '../../store/authStore'
 import { ChefHat, Clock, CheckCheck, LogOut, ToggleLeft, ToggleRight, ChevronDown, ChevronUp } from 'lucide-react'
 
+<<<<<<< HEAD
 const elapsed = (s) => {
   const m = Math.floor((Date.now() - new Date(s)) / 60000)
   if (m < 1) return 'just now'
@@ -17,6 +18,11 @@ const urgencyClass = (createdAt) => {
   if (m >= 15) return 'border-red-500/60'
   if (m >= 8) return 'border-amber-500/40'
   return 'border-surface-700'
+=======
+const fmt = (s) => {
+  const m = Math.floor((Date.now() - new Date(s)) / 60000)
+  return m < 1 ? 'just now' : `${m}m ago`
+>>>>>>> c591385ccdd58fa458e6948a62db78e45746c79f
 }
 
 export default function KitchenDisplay() {
@@ -25,7 +31,10 @@ export default function KitchenDisplay() {
   const [orders, setOrders] = useState([])
   const [products, setProducts] = useState([])
   const [showPanel, setShowPanel] = useState(false)
+<<<<<<< HEAD
   const [tick, setTick] = useState(0)
+=======
+>>>>>>> c591385ccdd58fa458e6948a62db78e45746c79f
 
   const loadOrders = async () => {
     const { data } = await api.get('/kitchen/orders')
@@ -43,6 +52,7 @@ export default function KitchenDisplay() {
 
     socket.on('customer:order_placed', () => loadOrders())
     socket.on('product:availability_changed', () => loadProducts())
+<<<<<<< HEAD
     // Remove served orders from kitchen display
     socket.on('kitchen:order_removed', ({ orderId }) => {
       setOrders(prev => prev.filter(o => o._id !== orderId))
@@ -57,6 +67,14 @@ export default function KitchenDisplay() {
       socket.off('kitchen:order_removed')
       clearInterval(refreshInterval)
       clearInterval(tickInterval)
+=======
+
+    const interval = setInterval(loadOrders, 15000)
+    return () => {
+      socket.off('customer:order_placed')
+      socket.off('product:availability_changed')
+      clearInterval(interval)
+>>>>>>> c591385ccdd58fa458e6948a62db78e45746c79f
       disconnectSocket()
     }
   }, [])
@@ -64,22 +82,34 @@ export default function KitchenDisplay() {
   const advance = async (order) => {
     const next = order.status === 'confirmed' ? 'in_progress' : 'ready'
     await api.patch(`/kitchen/orders/${order._id}/status`, { status: next })
+<<<<<<< HEAD
     setOrders(prev => prev.map(o => o._id === order._id ? { ...o, status: next } : o))
+=======
+    loadOrders()
+>>>>>>> c591385ccdd58fa458e6948a62db78e45746c79f
   }
 
   const toggleItemPrepared = async (orderId, idx) => {
     await api.patch(`/kitchen/orders/${orderId}/items/${idx}/prepared`)
+<<<<<<< HEAD
     setOrders(prev => prev.map(o => {
       if (o._id !== orderId) return o
       const items = [...o.items]
       items[idx] = { ...items[idx], prepared: !items[idx].prepared }
       return { ...o, items }
     }))
+=======
+    loadOrders()
+>>>>>>> c591385ccdd58fa458e6948a62db78e45746c79f
   }
 
   const toggleProduct = async (p) => {
     await api.patch(`/kitchen/products/${p._id}/availability`, { available: !p.available })
+<<<<<<< HEAD
     setProducts(prev => prev.map(pr => pr._id === p._id ? { ...pr, available: !pr.available } : pr))
+=======
+    loadProducts()
+>>>>>>> c591385ccdd58fa458e6948a62db78e45746c79f
   }
 
   const handleLogout = () => { logout(); navigate('/staff/login') }
@@ -89,9 +119,15 @@ export default function KitchenDisplay() {
   const ready = orders.filter(o => o.status === 'ready')
 
   const columns = [
+<<<<<<< HEAD
     { label: 'New Orders',       orders: confirmed,  btnLabel: 'Start Preparing', btnClass: 'bg-blue-500 hover:bg-blue-600',    headerBg: 'bg-blue-950/40',    headerText: 'text-blue-300',    countBg: 'bg-blue-500' },
     { label: 'In Progress',      orders: inProgress, btnLabel: 'Mark Ready',      btnClass: 'bg-emerald-500 hover:bg-emerald-600', headerBg: 'bg-amber-950/30', headerText: 'text-amber-300',   countBg: 'bg-amber-500' },
     { label: 'Ready for Pickup', orders: ready,      btnLabel: null,              btnClass: '',                                  headerBg: 'bg-emerald-950/30', headerText: 'text-emerald-300', countBg: 'bg-emerald-500' },
+=======
+    { label: 'New Orders', orders: confirmed, next: 'in_progress', btnLabel: 'Start Preparing', btnClass: 'bg-blue-500 hover:bg-blue-600', headerClass: 'border-blue-200 bg-blue-50' },
+    { label: 'In Progress', orders: inProgress, next: 'ready', btnLabel: 'Mark Ready', btnClass: 'bg-emerald-500 hover:bg-emerald-600', headerClass: 'border-emerald-200 bg-emerald-50' },
+    { label: 'Ready for Pickup', orders: ready, next: null, btnLabel: null, headerClass: 'border-amber-200 bg-amber-50' },
+>>>>>>> c591385ccdd58fa458e6948a62db78e45746c79f
   ]
 
   return (
@@ -107,7 +143,11 @@ export default function KitchenDisplay() {
             <p className="text-surface-400 text-xs">{user?.name}</p>
           </div>
         </div>
+<<<<<<< HEAD
         <div className="flex items-center gap-4">
+=======
+        <div className="flex items-center gap-3">
+>>>>>>> c591385ccdd58fa458e6948a62db78e45746c79f
           <div className="flex items-center gap-4 text-sm">
             <span className="text-blue-400 font-medium">{confirmed.length} new</span>
             <span className="text-amber-400 font-medium">{inProgress.length} cooking</span>
@@ -146,22 +186,35 @@ export default function KitchenDisplay() {
 
       {/* Ticket board */}
       <div className="flex-1 grid grid-cols-3 gap-0 divide-x divide-surface-800 overflow-hidden">
+<<<<<<< HEAD
         {columns.map(({ label, orders: colOrders, btnLabel, btnClass, headerBg, headerText, countBg }) => (
           <div key={label} className="flex flex-col overflow-hidden">
             <div className={`px-4 py-3 border-b border-surface-800 flex items-center justify-between flex-shrink-0 ${headerBg}`}>
               <span className={`font-semibold text-sm ${headerText}`}>{label}</span>
               <span className={`w-6 h-6 rounded-full ${countBg} flex items-center justify-center text-xs font-bold text-white`}>
+=======
+        {columns.map(({ label, orders: colOrders, next, btnLabel, btnClass, headerClass }) => (
+          <div key={label} className="flex flex-col overflow-hidden">
+            <div className={`px-4 py-3 border-b ${headerClass} flex items-center justify-between flex-shrink-0`}>
+              <span className="font-semibold text-surface-800 text-sm">{label}</span>
+              <span className="w-6 h-6 rounded-full bg-surface-800/20 flex items-center justify-center text-xs font-bold text-surface-700">
+>>>>>>> c591385ccdd58fa458e6948a62db78e45746c79f
                 {colOrders.length}
               </span>
             </div>
             <div className="flex-1 overflow-y-auto p-3 space-y-3">
               {colOrders.length === 0 && (
+<<<<<<< HEAD
                 <div className="text-center py-12 text-surface-700 text-sm">
+=======
+                <div className="text-center py-12 text-surface-600 text-sm">
+>>>>>>> c591385ccdd58fa458e6948a62db78e45746c79f
                   <CheckCheck className="w-8 h-8 mx-auto mb-2 opacity-30" />
                   All clear
                 </div>
               )}
               {colOrders.map(order => (
+<<<<<<< HEAD
                 <div key={order._id} className={`bg-surface-900 border-2 rounded-2xl overflow-hidden transition-colors ${urgencyClass(order.createdAt)}`}>
                   <div className="flex items-center justify-between px-4 py-3 bg-surface-800 border-b border-surface-700">
                     <span className="text-white font-bold text-xl font-display">Table {order.table?.tableNumber}</span>
@@ -170,11 +223,30 @@ export default function KitchenDisplay() {
                       {elapsed(order.createdAt)}
                     </div>
                   </div>
+=======
+                <div key={order._id} className="bg-surface-900 border border-surface-700 rounded-2xl overflow-hidden">
+                  {/* Ticket header */}
+                  <div className="flex items-center justify-between px-4 py-3 bg-surface-800 border-b border-surface-700">
+                    <div>
+                      <span className="text-white font-bold text-lg font-display">Table {order.table?.tableNumber}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-surface-400 text-xs">
+                      <Clock className="w-3 h-3" />
+                      {fmt(order.createdAt)}
+                    </div>
+                  </div>
+
+                  {/* Items */}
+>>>>>>> c591385ccdd58fa458e6948a62db78e45746c79f
                   <div className="px-4 py-3 space-y-2">
                     {order.items.map((item, idx) => (
                       <button key={idx} onClick={() => toggleItemPrepared(order._id, idx)}
                         className={`w-full flex items-center justify-between text-left rounded-xl px-3 py-2 transition-all ${
+<<<<<<< HEAD
                           item.prepared ? 'bg-surface-800/40 opacity-40' : 'bg-surface-800 hover:bg-surface-700'
+=======
+                          item.prepared ? 'bg-surface-800/40 opacity-50' : 'bg-surface-800 hover:bg-surface-700'
+>>>>>>> c591385ccdd58fa458e6948a62db78e45746c79f
                         }`}>
                         <span className={`text-sm ${item.prepared ? 'line-through text-surface-500' : 'text-white'}`}>
                           {item.name}
@@ -185,18 +257,37 @@ export default function KitchenDisplay() {
                       </button>
                     ))}
                   </div>
+<<<<<<< HEAD
                   <div className="px-4 pb-4">
                     {btnLabel ? (
+=======
+
+                  {/* Action */}
+                  {btnLabel && (
+                    <div className="px-4 pb-4">
+>>>>>>> c591385ccdd58fa458e6948a62db78e45746c79f
                       <button onClick={() => advance(order)}
                         className={`w-full py-2.5 rounded-xl text-white text-sm font-semibold transition-colors ${btnClass}`}>
                         {btnLabel}
                       </button>
+<<<<<<< HEAD
                     ) : (
                       <div className="w-full py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm text-center font-medium">
                         ✓ Awaiting pickup by waiter
                       </div>
                     )}
                   </div>
+=======
+                    </div>
+                  )}
+                  {!btnLabel && (
+                    <div className="px-4 pb-4">
+                      <div className="w-full py-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 text-sm text-center font-medium">
+                        Awaiting pickup
+                      </div>
+                    </div>
+                  )}
+>>>>>>> c591385ccdd58fa458e6948a62db78e45746c79f
                 </div>
               ))}
             </div>

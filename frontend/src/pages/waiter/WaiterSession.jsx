@@ -4,15 +4,26 @@ import api from '../../api/axios'
 import { connectSocket } from '../../api/socket'
 import { useNotifStore } from '../../store/notifStore'
 import Confirm from '../../components/common/Confirm'
+<<<<<<< HEAD
 import { ArrowLeft, Clock, CheckCircle2, Receipt } from 'lucide-react'
+=======
+import { ArrowLeft, Clock, CheckCircle2, ChefHat, Bike, ReceiptText, X } from 'lucide-react'
+>>>>>>> c591385ccdd58fa458e6948a62db78e45746c79f
 
 const fmt = (n) => `₹${Number(n || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`
 
 const STATUS_MAP = {
+<<<<<<< HEAD
   confirmed:   { label: 'Confirmed',   color: 'badge-blue'   },
   in_progress: { label: 'In Progress', color: 'badge-yellow' },
   ready:       { label: 'Ready!',      color: 'badge-green'  },
   served:      { label: 'Served',      color: 'badge-gray'   },
+=======
+  confirmed:   { label: 'Confirmed',   color: 'badge-blue' },
+  in_progress: { label: 'In Progress', color: 'badge-yellow' },
+  ready:       { label: 'Ready!',      color: 'badge-green' },
+  served:      { label: 'Served',      color: 'badge-gray' },
+>>>>>>> c591385ccdd58fa458e6948a62db78e45746c79f
 }
 
 export default function WaiterSession() {
@@ -24,6 +35,10 @@ export default function WaiterSession() {
   const [loading, setLoading] = useState(true)
   const [endConfirm, setEndConfirm] = useState(false)
   const [cashConfirm, setCashConfirm] = useState(false)
+<<<<<<< HEAD
+=======
+  const [ending, setEnding] = useState(false)
+>>>>>>> c591385ccdd58fa458e6948a62db78e45746c79f
 
   const load = async () => {
     try {
@@ -39,7 +54,11 @@ export default function WaiterSession() {
     socket.on('kitchen:order_ready', load)
     socket.on('customer:order_placed', load)
     socket.on('customer:pay_now', load)
+<<<<<<< HEAD
     socket.on('waiter:cash_confirmed', () => navigate('/waiter/floor'))
+=======
+    socket.on('waiter:cash_confirmed', load)
+>>>>>>> c591385ccdd58fa458e6948a62db78e45746c79f
     return () => {
       socket.off('kitchen:order_in_progress')
       socket.off('kitchen:order_ready')
@@ -56,11 +75,19 @@ export default function WaiterSession() {
 
   const confirmCash = async () => {
     await api.patch(`/waiter/sessions/${id}/confirm-cash`)
+<<<<<<< HEAD
     clearBySessionId(id)
     navigate('/waiter/floor')
   }
 
   const endSession = async () => {
+=======
+    clearBySessionId(id); load()
+  }
+
+  const endSession = async () => {
+    setEnding(true)
+>>>>>>> c591385ccdd58fa458e6948a62db78e45746c79f
     await api.post(`/waiter/sessions/${id}/end`)
     navigate('/waiter/floor')
   }
@@ -68,6 +95,7 @@ export default function WaiterSession() {
   if (loading) return <div className="flex items-center justify-center h-64 text-surface-400">Loading…</div>
   if (!session) return <div className="p-6 text-center text-surface-400">Session not found</div>
 
+<<<<<<< HEAD
   const subtotal = orders.reduce((s, o) => s + o.total, 0)
   const discountAmount = session.discountAmount || 0
   const total = session.totalAmount || subtotal
@@ -78,12 +106,24 @@ export default function WaiterSession() {
 
   const readyOrders = orders.filter(o => o.status === 'ready')
 
+=======
+  const total = orders.reduce((s, o) => s + o.total, 0)
+  const allServed = orders.length > 0 && orders.every(o => o.status === 'served')
+  const isPaid = session.paymentStatus === 'paid'
+  const isCashPending = session.status === 'payment' && session.paymentMethod === 'cash' && !isPaid
+  const dur = Math.floor((Date.now() - new Date(session.startTime)) / 60000)
+
+>>>>>>> c591385ccdd58fa458e6948a62db78e45746c79f
   return (
     <div className="p-4 max-w-2xl mx-auto space-y-4">
       {/* Header */}
       <div className="flex items-center gap-3">
+<<<<<<< HEAD
         <button onClick={() => navigate('/waiter/floor')}
           className="w-9 h-9 rounded-xl border border-surface-200 bg-white flex items-center justify-center hover:bg-surface-50">
+=======
+        <button onClick={() => navigate('/waiter/floor')} className="w-9 h-9 rounded-xl border border-surface-200 bg-white flex items-center justify-center hover:bg-surface-50">
+>>>>>>> c591385ccdd58fa458e6948a62db78e45746c79f
           <ArrowLeft className="w-4 h-4 text-surface-600" />
         </button>
         <div className="flex-1">
@@ -91,6 +131,7 @@ export default function WaiterSession() {
           <div className="flex items-center gap-2 text-xs text-surface-400">
             <Clock className="w-3 h-3" /> {dur}m active
             {isPaid && <span className="badge-green ml-1">Paid</span>}
+<<<<<<< HEAD
             {isPaymentMode && !isPaid && <span className="badge-yellow ml-1">Awaiting Payment</span>}
           </div>
         </div>
@@ -100,6 +141,13 @@ export default function WaiterSession() {
           {discountAmount > 0 && (
             <p className="text-xs text-emerald-600">-{fmt(discountAmount)} discount</p>
           )}
+=======
+          </div>
+        </div>
+        <div className="text-right">
+          <p className="text-xs text-surface-400">Session Total</p>
+          <p className="font-display font-bold text-xl text-surface-900">{fmt(total)}</p>
+>>>>>>> c591385ccdd58fa458e6948a62db78e45746c79f
         </div>
       </div>
 
@@ -108,11 +156,15 @@ export default function WaiterSession() {
         <div className="bg-amber-50 border-2 border-amber-300 rounded-2xl p-4 flex items-center justify-between gap-4">
           <div>
             <p className="font-semibold text-amber-800 text-sm">💰 Cash Payment Requested</p>
+<<<<<<< HEAD
             <p className="text-amber-700 text-sm">
               Collect <strong>{fmt(total)}</strong> from customer
               {discountAmount > 0 && <span className="text-emerald-700"> (after {fmt(discountAmount)} discount)</span>}
               {session.couponCode && <span className="ml-1 text-xs text-amber-600">[{session.couponCode}]</span>}
             </p>
+=======
+            <p className="text-amber-700 text-sm">Collect <strong>{fmt(total)}</strong> from customer</p>
+>>>>>>> c591385ccdd58fa458e6948a62db78e45746c79f
           </div>
           <button onClick={() => setCashConfirm(true)} className="btn-primary text-sm flex-shrink-0">
             Confirm Received
@@ -120,6 +172,7 @@ export default function WaiterSession() {
         </div>
       )}
 
+<<<<<<< HEAD
       {/* Ready orders highlight */}
       {readyOrders.length > 0 && (
         <div className="bg-emerald-50 border-2 border-emerald-300 rounded-2xl p-4">
@@ -144,6 +197,12 @@ export default function WaiterSession() {
           <div className="card p-8 text-center text-surface-400 text-sm">
             No orders yet. Customer is browsing the menu.
           </div>
+=======
+      {/* Orders */}
+      <div className="space-y-3">
+        {orders.length === 0 && (
+          <div className="card p-8 text-center text-surface-400 text-sm">No orders yet. Customer is browsing the menu.</div>
+>>>>>>> c591385ccdd58fa458e6948a62db78e45746c79f
         )}
         {orders.map(order => (
           <div key={order._id} className="card overflow-hidden">
@@ -178,6 +237,7 @@ export default function WaiterSession() {
         ))}
       </div>
 
+<<<<<<< HEAD
       {/* Bill summary if in payment mode */}
       {isPaymentMode && (
         <div className="card p-4 space-y-2">
@@ -202,6 +262,10 @@ export default function WaiterSession() {
 
       {/* End Session button — only show when session is closed (payment received) but waiter hasn't navigated away yet */}
       {session.status === 'active' && orders.every(o => o.status === 'served') && orders.length > 0 && (
+=======
+      {/* End Session */}
+      {(isPaid || (allServed && session.status !== 'payment')) && (
+>>>>>>> c591385ccdd58fa458e6948a62db78e45746c79f
         <button onClick={() => setEndConfirm(true)}
           className="w-full py-3 rounded-2xl bg-surface-900 text-white font-semibold text-sm hover:bg-surface-800 transition-colors flex items-center justify-center gap-2">
           <ReceiptText className="w-4 h-4" /> End Session & Free Table
@@ -209,10 +273,16 @@ export default function WaiterSession() {
       )}
 
       <Confirm open={cashConfirm} onClose={() => setCashConfirm(false)} onConfirm={confirmCash}
+<<<<<<< HEAD
         title="Confirm Cash Collection"
         message={`Confirm you collected ${fmt(total)} in cash from the customer?`} />
       <Confirm open={endConfirm} onClose={() => setEndConfirm(false)} onConfirm={endSession}
         title="End Session" message="This will close the session and free the table." />
+=======
+        title="Confirm Cash Collection" message={`Confirm you have collected ${fmt(total)} in cash from the customer?`} />
+      <Confirm open={endConfirm} onClose={() => setEndConfirm(false)} onConfirm={endSession}
+        title="End Session" message="This will close the session and free the table for the next customer." />
+>>>>>>> c591385ccdd58fa458e6948a62db78e45746c79f
     </div>
   )
 }

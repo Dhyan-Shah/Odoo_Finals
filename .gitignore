@@ -1,5 +1,11 @@
 node_modules/
 .env
+<<<<<<< HEAD
 .vscode/
 dist/
 build/
+=======
+dist/
+build/
+.vscode/
+>>>>>>> c591385ccdd58fa458e6948a62db78e45746c79f

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # ☕ Odoo POS Cafe
 
 A full-stack Restaurant Point-of-Sale application with real-time order management, role-based access, and customer-facing QR menu.
@@ -128,3 +129,6 @@ cd frontend && npm run build
 # Serve backend + static frontend
 # Copy frontend/dist to backend/public and serve it from Express
 ```
+=======
+# Pos-Cafe
+>>>>>>> c591385ccdd58fa458e6948a62db78e45746c79f
