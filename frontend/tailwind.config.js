@@ -1,0 +1,72 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ['./index.html', './src/**/*.{js,jsx}'],
+  theme: {
+    extend: {
+      fontFamily: {
+        display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+        body: ['"Nunito"', 'system-ui', 'sans-serif'],
+        accent: ['"Playfair Display"', 'serif'],
+        mono: ['"JetBrains Mono"', 'monospace'],
+      },
+      colors: {
+        brand: {
+          50:  '#fff5f5',
+          100: '#ffe0e0',
+          200: '#ffbcbc',
+          300: '#ff8787',
+          400: '#e05555',
+          500: '#c0392b',
+          600: '#a93226',
+          700: '#922b21',
+          800: '#7b241c',
+          900: '#641e16',
+          950: '#4a1010',
+        },
+        velvet: '#8B1A1A',
+        beige: {
+          50: '#fdfaf5',
+          100: '#faf4e8',
+          200: '#f5e8d0',
+          300: '#edd8b2',
+          400: '#e2c48e',
+          500: '#d4a96a',
+        },
+        surface: {
+          50:  '#fdf8f4',
+          100: '#f9efe8',
+          200: '#f0ddd0',
+          300: '#e4c4b0',
+          400: '#cfa88a',
+          500: '#b88c68',
+          600: '#8a6448',
+          700: '#634530',
+          800: '#3d2b1e',
+          900: '#231810',
+          950: '#120c07',
+        },
+      },
+      boxShadow: {
+        card: '0 4px 24px -2px rgba(35, 24, 16, 0.10), 0 1px 4px 0 rgba(35, 24, 16, 0.06)',
+        'card-hover': '0 8px 32px -4px rgba(35, 24, 16, 0.16), 0 2px 8px 0 rgba(35, 24, 16, 0.08)',
+      },
+      animation: {
+        'slide-in': 'slideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
+        'fade-in': 'fadeIn 0.25s ease-out',
+        'bounce-in': 'bounceIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+        'float': 'float 6s ease-in-out infinite',
+        'pulse-ring': 'pulseRing 1.5s ease-out infinite',
+        'rise': 'rise 0.6s cubic-bezier(0.16,1,0.3,1) both',
+      },
+      keyframes: {
+        slideIn: { from: { transform: 'translateY(10px)', opacity: 0 }, to: { transform: 'translateY(0)', opacity: 1 } },
+        fadeIn: { from: { opacity: 0 }, to: { opacity: 1 } },
+        bounceIn: { from: { transform: 'scale(0.85)', opacity: 0 }, to: { transform: 'scale(1)', opacity: 1 } },
+        float: { '0%,100%': { transform: 'translateY(0px)' }, '50%': { transform: 'translateY(-12px)' } },
+        pulseRing: { '0%': { transform: 'scale(1)', opacity: 1 }, '100%': { transform: 'scale(1.7)', opacity: 0 } },
+        rise: { from: { transform: 'translateY(20px)', opacity: 0 }, to: { transform: 'translateY(0)', opacity: 1 } },
+      },
+    },
+  },
+  plugins: [],
+}
