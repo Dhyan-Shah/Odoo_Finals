@@ -13,7 +13,7 @@ export default function AdminProducts() {
   const [modal, setModal] = useState(false)
   const [editing, setEditing] = useState(null)
   const [confirm, setConfirm] = useState(null)
-  const [form, setForm] = useState({ name: '', price: '', category: '', description: '', isAvailable: true })
+  const [form, setForm] = useState({ name: '', price: '', category: '', description: '', available: true })
 
   const load = async () => {
     const [p, c] = await Promise.all([api.get('/admin/products'), api.get('/admin/categories')])
@@ -23,12 +23,12 @@ export default function AdminProducts() {
 
   const openCreate = () => {
     setEditing(null)
-    setForm({ name: '', price: '', category: categories[0]?._id || '', description: '', isAvailable: true })
+    setForm({ name: '', price: '', category: categories[0]?._id || '', description: '', available: true })
     setModal(true)
   }
   const openEdit = (p) => {
     setEditing(p)
-    setForm({ name: p.name, price: p.price, category: p.category?._id || '', description: p.description || '', isAvailable: p.isAvailable })
+    setForm({ name: p.name, price: p.price, category: p.category?._id || '', description: p.description || '', available: p.available })
     setModal(true)
   }
   const save = async () => {
@@ -37,7 +37,10 @@ export default function AdminProducts() {
     setModal(false); load()
   }
   const del = async (p) => { await api.delete(`/admin/products/${p._id}`); setConfirm(null); load() }
-  const toggle = async (p) => { await api.patch(`/admin/products/${p._id}/availability`); load() }
+  const toggle = async (p) => {
+    await api.patch(`/admin/products/${p._id}/availability`, { available: !p.available })
+    load()
+  }
 
   const filtered = products.filter(p => p.name?.toLowerCase().includes(search.toLowerCase()))
 
@@ -62,21 +65,21 @@ export default function AdminProducts() {
       <div className="card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="border-b border-surface-100">
+            <thead className="border-b border-gray-100">
               <tr>
                 {['Product', 'Category', 'Price', 'Availability', 'Actions'].map(h => (
-                  <th key={h} className="px-5 py-3.5 text-left text-xs font-bold text-surface-400 uppercase tracking-wider">{h}</th>
+                  <th key={h} className="px-5 py-3.5 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">{h}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-surface-50">
+            <tbody className="divide-y divide-gray-50">
               {filtered.length === 0 && (
-                <tr><td colSpan={5} className="py-12 text-center text-surface-400">
+                <tr><td colSpan={5} className="py-12 text-center text-gray-400">
                   <Package className="w-8 h-8 mx-auto mb-2 opacity-30" />No products found
                 </td></tr>
               )}
               {filtered.map(p => (
-                <tr key={p._id} className="hover:bg-beige-50 transition-colors">
+                <tr key={p._id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-5 py-3.5">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
@@ -84,20 +87,22 @@ export default function AdminProducts() {
                         <Coffee className="w-4 h-4 text-white" />
                       </div>
                       <div>
-                        <p className="font-bold text-surface-900">{p.name}</p>
-                        {p.description && <p className="text-xs text-surface-400 truncate max-w-xs">{p.description}</p>}
+                        <p className="font-bold text-gray-900">{p.name}</p>
+                        {p.description && <p className="text-xs text-gray-400 truncate max-w-xs">{p.description}</p>}
                       </div>
                     </div>
                   </td>
                   <td className="px-5 py-3.5">
                     <span className="badge-yellow">{p.category?.name || '—'}</span>
                   </td>
-                  <td className="px-5 py-3.5 font-display font-bold text-surface-900">{fmt(p.price)}</td>
+                  <td className="px-5 py-3.5 font-bold text-gray-900">{fmt(p.price)}</td>
                   <td className="px-5 py-3.5">
                     <button onClick={() => toggle(p)}
-                      className={`flex items-center gap-1.5 text-xs font-bold transition-colors ${p.isAvailable ? 'text-emerald-600' : 'text-surface-400'}`}>
-                      {p.isAvailable ? <ToggleRight className="w-5 h-5" /> : <ToggleLeft className="w-5 h-5" />}
-                      {p.isAvailable ? 'Available' : 'Unavailable'}
+                      className={`flex items-center gap-1.5 text-xs font-bold transition-colors ${p.available ? 'text-emerald-600' : 'text-gray-400'}`}>
+                      {p.available
+                        ? <ToggleRight className="w-5 h-5" />
+                        : <ToggleLeft className="w-5 h-5" />}
+                      {p.available ? 'Available' : 'Unavailable'}
                     </button>
                   </td>
                   <td className="px-5 py-3.5">
@@ -139,11 +144,11 @@ export default function AdminProducts() {
               placeholder="Optional description" />
           </div>
           <label className="flex items-center gap-3 cursor-pointer">
-            <div className={`w-10 h-6 rounded-full transition-colors relative ${form.isAvailable ? 'bg-brand-500' : 'bg-surface-300'}`}
-              onClick={() => setForm(f => ({ ...f, isAvailable: !f.isAvailable }))}>
-              <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${form.isAvailable ? 'right-1' : 'left-1'}`} />
+            <div className={`w-10 h-6 rounded-full transition-colors relative ${form.available ? 'bg-indigo-500' : 'bg-gray-300'}`}
+              onClick={() => setForm(f => ({ ...f, available: !f.available }))}>
+              <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${form.available ? 'right-1' : 'left-1'}`} />
             </div>
-            <span className="text-sm font-semibold text-surface-700">Available for ordering</span>
+            <span className="text-sm font-semibold text-gray-700">Available for ordering</span>
           </label>
           <div className="flex justify-end gap-3 pt-2">
             <button onClick={() => setModal(false)} className="btn-secondary">Cancel</button>

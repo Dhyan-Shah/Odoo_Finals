@@ -74,6 +74,25 @@ router.put('/products/:id', ...adminOnly, async (req, res) => {
     res.json(product);
   } catch (e) { res.status(400).json({ message: e.message }); }
 });
+
+// ── PRODUCT AVAILABILITY TOGGLE ───────────────────────────────────────────
+router.patch('/products/:id/availability', ...adminOnly, async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) return res.status(404).json({ message: 'Product not found' });
+
+    product.available = req.body.available !== undefined ? req.body.available : !product.available;
+    await product.save();
+
+    req.io.emit('product:availability_changed', {
+      productId: product._id,
+      available: product.available && product.active,
+    });
+
+    res.json({ success: true, available: product.available });
+  } catch (e) { res.status(500).json({ message: e.message }); }
+});
+
 router.delete('/products/:id', ...adminOnly, async (req, res) => {
   await Product.findByIdAndUpdate(req.params.id, { active: false });
   req.io.emit('product:availability_changed', { productId: req.params.id, available: false });
