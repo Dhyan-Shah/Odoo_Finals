@@ -1,68 +1,87 @@
-# Velvet Brew — Odoo POS Cafe (Redesigned)
+# ☕ Odoo POS Cafe
 
-A completely redesigned cafe Point-of-Sale system with a **Red Velvet & Beige** luxury theme.
+A real-time Restaurant Point-of-Sale system built for the **Odoo Hackathon**. It covers the complete lifecycle of a restaurant visit — from a customer scanning a table QR code and placing an order, to kitchen staff preparing it, a waiter serving it, and the customer paying via UPI, Card, or Cash.
 
-## 🎨 Design Changes
+---
 
-### Theme
-- **Primary**: Red Velvet gradient (`#8B1A1A → #c0392b`)
-- **Background**: Warm beige/cream (`#fdf8f4`)
-- **Typography**: Cormorant Garamond (display) + Nunito (body)
-- **Cards**: Soft white with warm shadows
+## 👥 Team
 
-### New Pages
-- **Landing Page** (`/landing`) — Animated 3D landing page with:
-  - Floating 3D coffee cup SVG with steam
-  - Animated gradient orbs
-  - Mouse-tilt 3D feature cards
-  - Floating live-data widgets
-  - Stats, features, roles sections
+| Name | Role |
+|---|---|
+| Vraj Soni | Full Stack Developer |
+| Darsh Patel | Full Stack Developer |
+| Dhyan Shah | Full Stack Developer+Hardware |
 
-### Updated Pages
-- **Staff Login** — Split-panel with velvet left side and beige form
-- **Admin Layout** — Velvet red sidebar with glass-effect navigation
-- **Admin Dashboard** — Gradient stat cards with shine animations
-- **Admin Analytics** — **4 new charts**:
-  - Revenue Bar Chart (by waiter)
-  - Revenue Pie/Donut Chart (share breakdown)
-  - Sessions Comparison Bar Chart
-  - Performance Radar Chart
-  - Session Revenue Timeline Line Chart (when waiter selected)
-- **Admin Products** — Full table with toggle availability
-- **Admin Staff** — Refreshed with avatar initials
-- **Admin Categories** — Card grid with gradient icons
-- **Waiter Layout** — Velvet top bar
-- **Waiter Floor** — Improved table cards with status dots
-- **Modal & Confirm** — Warmer, rounded design
-- **Toast** — Refined notification style
+---
 
-## 🚀 Getting Started
+## 👤 Users
 
-### Frontend
-```bash
-cd frontend
-npm install
-npm run dev
+| Role | Access |
+|---|---|
+| **Customer** | Scans table QR, browses menu, places order, tracks food status, pays |
+| **Waiter** | Manages tables and sessions, gets notified when food is ready, collects cash |
+| **Kitchen Staff** | Sees incoming orders, updates cooking stages, toggles item availability |
+| **Admin** | Manages products, tables, floors, staff accounts, views analytics and reports |
+
+---
+
+## ✨ Features
+
+**Customer**
+- Scan table QR to open menu — no login needed
+- Place orders and track real-time status: Placed → In Progress → Ready → Served → Paid
+- Pay via UPI QR (auto-generated with exact amount), Card, or Cash
+
+**Waiter**
+- Floor view with live table status (Free, Occupied, Payment mode)
+- Lock into a table session — table is isolated to that waiter only
+- Get notified when kitchen marks an order Ready
+- Confirm cash collection — recorded against the waiter's name
+
+**Kitchen Staff**
+- Live ticket display for all incoming orders
+- Two-stage flow — In Progress → Ready (notifies waiter on Ready)
+- Toggle any item as unavailable — instantly hides it from customer menu
+
+**Admin**
+- Full product, category, floor, and table management
+- Generate table QR codes for physical placement
+- Waiter performance analytics — tables managed, sessions, revenue collected
+- Reports filtered by date, waiter, payment method, and table
+
+---
+
+## 🔧 Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | React + Vite + Tailwind CSS |
+| State | Zustand |
+| Real-time | Socket.io |
+| Backend | Node.js + Express |
+| Database | MongoDB + Mongoose |
+| Auth | JWT + bcryptjs |
+| QR Code | qrcode.react |
+| Icons | Lucide React |
+| Deployment | Vercel (frontend) + Render (backend) + MongoDB Atlas |
+
+---
+
+## 🔔 Hardware — Raspberry Pi + Buzzer
+
+A Raspberry Pi is connected to a buzzer and runs a small Flask server alongside the main application. The POS backend sends HTTP requests to this server to trigger buzzer events at key moments:
+
+- **Single beep** — when a customer places a new order, alerting kitchen staff
+- **Double beep** — when kitchen marks an order as Ready, alerting the waiter to pick it up
+
+The Pi GPIO controls the buzzer directly. The backend posts to `/hardware/buzzer` with the number of beeps, and the Pi handles the rest independently — keeping hardware completely decoupled from the software stack.
+
+```
+POS Backend → POST /hardware/buzzer { times: 1 } → Raspberry Pi → GPIO → Buzzer
 ```
 
-### Backend
-```bash
-cd backend
-npm install
-node server.js
-```
+---
 
-### Default Credentials
-| Role    | Email              | Password  |
-|---------|--------------------|-----------|
-| Admin   | admin@cafe.com     | admin123  |
-| Waiter  | waiter@cafe.com    | waiter123 |
-| Kitchen | kitchen@cafe.com   | kitchen123|
+## 🏆 Built For
 
-## 📦 Tech Stack
-- React 18 + Vite
-- TailwindCSS 3
-- Recharts (analytics graphs)
-- Socket.IO (real-time)
-- Zustand (state)
-- Express.js + MongoDB (backend)
+**Odoo Hackathon** — 24-hour build challenge.
