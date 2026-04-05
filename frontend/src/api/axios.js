@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: 'https://odoo-finals-1.onrender.com',
+  baseURL: '/api',
   timeout: 15000,
 })
 
